@@ -1,0 +1,30 @@
+{
+  "name": "modu-pro-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "description": "Backend API for Modu Pro Innovation Pvt. Ltd.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node scripts/seedDatabase.js",
+    "create-admin": "node scripts/createAdmin.js",
+    "test": "node scripts/runTests.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.5.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "modu-pro-innovation": "file:..",
+    "mongoose": "^8.9.5",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.10.0"
+  }
+}
