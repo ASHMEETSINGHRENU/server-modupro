@@ -24,12 +24,16 @@ app.use(
 );
 
 // Approved frontend origins
-const allowedOrigins = (
-  process.env.CLIENT_ORIGIN || 'http://localhost:5173,http://127.0.0.1:5173'
-)
+const defaultOrigins = [
+  'https://client-modupro.vercel.app',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+];
+const envOrigins = (process.env.CLIENT_ORIGIN || '')
   .split(',')
   .map((o) => o.trim().replace(/\/+$/, ''))
   .filter(Boolean);
+const allowedOrigins = Array.from(new Set([...defaultOrigins, ...envOrigins]));
 
 app.use(
   cors({
