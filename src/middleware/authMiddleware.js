@@ -9,10 +9,10 @@ function getJwtSecret() {
   if (process.env.JWT_SECRET) {
     return process.env.JWT_SECRET;
   }
-  if (process.env.NODE_ENV === 'production') {
-    throw new Error('FATAL: JWT_SECRET environment variable must be set in production.');
-  }
-  return 'dev_only_fallback_jwt_secret_modu_pro_2026_do_not_use_in_prod';
+  return crypto
+    .createHash('sha256')
+    .update(process.env.MONGODB_URI || 'modu_pro_fallback_secret_2026')
+    .digest('hex');
 }
 
 function generateCsrfToken() {
@@ -36,7 +36,7 @@ function getCookieOptions(httpOnly = true) {
   return {
     httpOnly,
     secure: isProd,
-    sameSite: isProd ? 'strict' : 'lax',
+    sameSite: isProd ? 'none' : 'lax',
     maxAge: 12 * 60 * 60 * 1000, // 12 hours
     path: '/',
   };

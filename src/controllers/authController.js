@@ -66,6 +66,7 @@ exports.login = async (req, res, next) => {
           role: admin.role,
           lastLogin: admin.lastLogin,
         },
+        token,
         csrfToken,
       },
     });
