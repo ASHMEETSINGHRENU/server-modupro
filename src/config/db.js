@@ -3,6 +3,8 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const net = require('net');
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+
 
 let managedMongodProcess = null;
 
@@ -79,15 +81,34 @@ async function ensureLocalMongodIfNeeded(uri) {
 }
 
 async function connectDB() {
-  const rawUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/modu_pro';
+  const rawUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/Modu_pro';
+  const directUri = process.env.MONGODB_DIRECT_URI || '';
+  const dbName = process.env.MONGODB_DB_NAME || 'Modu_pro';
   const uri = await ensureLocalMongodIfNeeded(rawUri);
 
   mongoose.set('strictQuery', true);
-  await mongoose.connect(uri, {
-    serverSelectionTimeoutMS: 8000,
-  });
+  try {
+    await mongoose.connect(uri, {
+      dbName,
+      serverSelectionTimeoutMS: 12000,
+    });
+  } catch (err) {
+    if (directUri && directUri !== uri) {
+      console.warn(
+        `[MongoDB] Primary URI connection failed (${err.message}). Falling back to direct replicaSet URI...`
+      );
+      await mongoose.connect(directUri, {
+        dbName,
+        serverSelectionTimeoutMS: 15000,
+      });
+    } else {
+      throw err;
+    }
+  }
 
-  console.log(`[MongoDB] Connected successfully to ${mongoose.connection.name}`);
+  console.log(
+    `[MongoDB] Connected successfully to database "${mongoose.connection.name}" on ${mongoose.connection.host}`
+  );
   return mongoose.connection;
 }
 
